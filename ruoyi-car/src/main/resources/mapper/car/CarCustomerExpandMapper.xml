@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.car.mapper.CarCustomerExpandMapper">
+    
+    <resultMap type="CarCustomerExpand" id="CarCustomerExpandResult">
+        <result property="id"    column="id"    />
+        <result property="customerId"    column="customer_id"    />
+        <result property="customerName" column="customerName"    />
+        <result property="isPay"    column="is_pay"    />
+        <result property="carScore"    column="car_score"    />
+        <result property="useTimes"    column="use_times"    />
+        <result property="violationsNum"    column="violations_num"    />
+        <result property="nowBalance"    column="now_balance"    />
+        <result property="creditScore"    column="credit_score"    />
+    </resultMap>
+
+    <sql id="selectCarCustomerExpandVo">
+        select id, customer_id, is_pay, car_score, use_times, violations_num, now_balance, credit_score from car_customer_expand
+    </sql>
+
+    <sql id="selectCarCustomerExpandAndName">
+        select cce.id, cc.name as customerName, cce.customer_id, cce.is_pay, cce.car_score, cce.use_times, cce.violations_num, cce.now_balance, cce.credit_score from car_customer_expand cce,car_customer cc
+    </sql>
+
+    <select id="selectCarCustomerExpandList" parameterType="CarCustomerExpand" resultMap="CarCustomerExpandResult">
+        <include refid="selectCarCustomerExpandAndName"/>
+        <where>
+            <if test="customerId != null "> and cce.customer_id = #{customerId}</if>
+            <if test="customerName != null "> and cc.name = #{customerName}</if>
+            <if test="isPay != null  and isPay != ''"> and cce.is_pay = #{isPay}</if>
+            <if test="carScore != null "> and cce.car_score = #{carScore}</if>
+            <if test="params.beginUseTimes != null and params.beginUseTimes != '' and params.endUseTimes != null and params.endUseTimes != ''"> and cce.use_times between #{params.beginUseTimes} and #{params.endUseTimes}</if>
+            <if test="violationsNum != null "> and cce.violations_num = #{violationsNum}</if>
+            <if test="nowBalance != null "> and cce.now_balance = #{nowBalance}</if>
+            <if test="params.beginCreditScore != null and params.beginCreditScore != '' and params.endCreditScore != null and params.endCreditScore != ''"> and cce.credit_score between #{params.beginCreditScore} and #{params.endCreditScore}</if>
+            and cc.id = cce.customer_id
+        </where>
+
+    </select>
+    
+    <select id="selectCarCustomerExpandById" parameterType="Long" resultMap="CarCustomerExpandResult">
+        <include refid="selectCarCustomerExpandVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertCarCustomerExpand" parameterType="CarCustomerExpand" useGeneratedKeys="true" keyProperty="id">
+        insert into car_customer_expand
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="customerId != null">customer_id,</if>
+            <if test="isPay != null and isPay != ''">is_pay,</if>
+            <if test="carScore != null">car_score,</if>
+            <if test="useTimes != null">use_times,</if>
+            <if test="violationsNum != null">violations_num,</if>
+            <if test="nowBalance != null">now_balance,</if>
+            <if test="creditScore != null">credit_score,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="customerId != null">#{customerId},</if>
+            <if test="isPay != null and isPay != ''">#{isPay},</if>
+            <if test="carScore != null">#{carScore},</if>
+            <if test="useTimes != null">#{useTimes},</if>
+            <if test="violationsNum != null">#{violationsNum},</if>
+            <if test="nowBalance != null">#{nowBalance},</if>
+            <if test="creditScore != null">#{creditScore},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCarCustomerExpand" parameterType="CarCustomerExpand">
+        update car_customer_expand
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="customerId != null">customer_id = #{customerId},</if>
+            <if test="isPay != null and isPay != ''">is_pay = #{isPay},</if>
+            <if test="carScore != null">car_score = #{carScore},</if>
+            <if test="useTimes != null">use_times = #{useTimes},</if>
+            <if test="violationsNum != null">violations_num = #{violationsNum},</if>
+            <if test="nowBalance != null">now_balance = #{nowBalance},</if>
+            <if test="creditScore != null">credit_score = #{creditScore},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCarCustomerExpandById" parameterType="Long">
+        delete from car_customer_expand where id = #{id}
+    </delete>
+
+    <delete id="deleteCarCustomerExpandByIds" parameterType="String">
+        delete from car_customer_expand where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

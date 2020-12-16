@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.car.mapper.CarModelMapper">
+    
+    <resultMap type="CarModel" id="CarModelResult">
+        <result property="id"    column="id"    />
+        <result property="brandId"    column="brand_id"    />
+        <result property="model"    column="model"    />
+        <result property="modelPic"    column="model_pic"    />
+        <result property="brandName" column="brand_name"/>
+        <result property="capacity"    column="capacity"    />
+        <result property="battery"    column="battery"    />
+        <result property="firstPrice"    column="first_price"    />
+        <result property="carNumber"    column="car_number"    />
+        <result property="endurance"    column="endurance"    />
+    </resultMap>
+
+    <sql id="selectCarModelVo">
+        select id, brand_id, model, model_pic, capacity, battery, first_price, car_number, endurance from car_model
+    </sql>
+
+    <sql id="selectCarModelAndBrandVo">
+        select
+               cm.id,
+               cm.brand_id,
+               cm.model,
+               cm.model_pic,
+               cm.capacity,
+               cm.battery,
+               cm.first_price,
+               cm.endurance,
+               cm.car_number,
+               cb.brand as brand_name
+        from car_model cm,car_brand cb
+    </sql>
+
+    <select id="selectCarModelList" parameterType="CarModel" resultMap="CarModelResult">
+        <include refid="selectCarModelAndBrandVo"/>
+        <where>  
+            <if test="brandId != null "> and cm.brand_id = #{brandId}</if>
+            <if test="model != null  and model != ''"> and cm.model like concat('%', #{model}, '%')</if>
+            <if test="capacity != null "> and capacity = #{capacity}</if>
+            <if test="battery != null "> and battery = #{battery}</if>
+            <if test="params.beginFirstPrice != null and params.beginFirstPrice != '' and params.endFirstPrice != null and params.endFirstPrice != ''"> and first_price between #{params.beginFirstPrice} and #{params.endFirstPrice}</if>
+            <if test="carNumber != null "> and car_number = #{carNumber}</if>
+            <if test="params.beginEndurance != null and params.beginEndurance != '' and params.endEndurance != null and params.endEndurance != ''"> and endurance between #{params.beginEndurance} and #{params.endEndurance}</if>
+             and cm.brand_id = cb.id
+        </where>
+        order by cm.brand_id
+    </select>
+
+    <select id="selectCarModelListByBrandId" parameterType="long" resultMap="CarModelResult">
+        <include refid="selectCarModelAndBrandVo"/>
+        where cm.brand_id = cb.id
+        and cm.brand_id = #{brandId}
+    </select>
+    
+    <select id="selectCarModelById" parameterType="Long" resultMap="CarModelResult">
+        <include refid="selectCarModelAndBrandVo"/>
+        where cm.id = #{id}
+        and cm.brand_id = cb.id
+    </select>
+
+    <insert id="insertCarModel" parameterType="CarModel" useGeneratedKeys="true" keyProperty="id">
+        insert into car_model
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="brandId != null">brand_id,</if>
+            <if test="model != null">model,</if>
+            <if test="modelPic != null">model_pic,</if>
+            <if test="capacity != null">capacity,</if>
+            <if test="battery != null">battery,</if>
+            <if test="firstPrice != null">first_price,</if>
+            <if test="carNumber != null">car_number,</if>
+            <if test="endurance != null">endurance,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="brandId != null">#{brandId},</if>
+            <if test="model != null">#{model},</if>
+            <if test="modelPic != null">#{modelPic},</if>
+            <if test="capacity != null">#{capacity},</if>
+            <if test="battery != null">#{battery},</if>
+            <if test="firstPrice != null">#{firstPrice},</if>
+            <if test="carNumber != null">#{carNumber},</if>
+            <if test="endurance != null">#{endurance},</if>
+        </trim>
+    </insert>
+
+    <update id="updateCarModel" parameterType="CarModel">
+        update car_model
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="brandId != null">brand_id = #{brandId},</if>
+            <if test="model != null">model = #{model},</if>
+            <if test="modelPic != null">model_pic = #{modelPic},</if>
+            <if test="capacity != null">capacity = #{capacity},</if>
+            <if test="battery != null">battery = #{battery},</if>
+            <if test="firstPrice != null">first_price = #{firstPrice},</if>
+            <if test="carNumber != null">car_number = #{carNumber},</if>
+            <if test="endurance != null">endurance = #{endurance},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCarModelById" parameterType="Long">
+        delete from car_model where id = #{id}
+    </delete>
+
+    <delete id="deleteCarModelByIds" parameterType="String">
+        delete from car_model where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>
