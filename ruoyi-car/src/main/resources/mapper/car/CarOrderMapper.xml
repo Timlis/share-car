@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.car.mapper.CarOrderMapper">
+
+    <resultMap type="com.ruoyi.car.domain.CarOrder" id="CarOrderResult">
+        <result property="orderId" column="order_id"/>
+        <result property="carId" column="car_id"/>
+        <result property="customerId" column="customer_id"/>
+        <result property="startTime" column="start_time"/>
+        <result property="endTime" column="end_time"/>
+        <result property="startPlaceId" column="start_place_id"/>
+        <result property="endPlaceId" column="end_place_id"/>
+        <result property="cost" column="cost"/>
+        <result property="mileage" column="mileage"/>
+        <result property="state" column="state"/>
+    </resultMap>
+
+    <sql id="selectCarOrderVo">
+        select order_id,
+               car_id,
+               customer_id,
+               start_time,
+               end_time,
+               start_place_id,
+               end_place_id,
+               cost,
+               mileage,
+               state
+        from car_order
+    </sql>
+
+    <select id="selectCarOrderList" parameterType="CarOrder" resultMap="CarOrderResult">
+        <include refid="selectCarOrderVo"/>
+        <where>
+            <if test="carId != null ">and car_id = #{carId}</if>
+            <if test="customerId != null ">and customer_id = #{customerId}</if>
+            <if test="startTime != null ">and start_time = #{startTime}</if>
+            <if test="endTime != null ">and end_time = #{endTime}</if>
+            <if test="startPlaceId != null ">and start_place_id = #{startPlaceId}</if>
+            <if test="endPlaceId != null ">and end_place_id = #{endPlaceId}</if>
+            <if test="cost != null ">and cost = #{cost}</if>
+            <if test="mileage != null ">and mileage = #{mileage}</if>
+            <if test="state != null ">and state = #{state}</if>
+        </where>
+    </select>
+
+    <select id="selectCarOrderById" parameterType="Long" resultMap="CarOrderResult">
+        <include refid="selectCarOrderVo"/>
+        where order_id = #{orderId}
+    </select>
+
+    <select id="countInAndOutByPartId" resultType="int">
+        <if test="param2 == 0">SELECT COUNT(1) FROM car_order WHERE start_place_id = #{param1}</if>
+        <if test="param2 == 1">SELECT COUNT(1) FROM car_order WHERE  end_place_id= #{param1}</if>
+    </select>
+
+    <insert id="replaceCarOrder" parameterType="CarOrder">
+        replace into car_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderId != null">order_id,</if>
+            <if test="carId != null">car_id,</if>
+            <if test="customerId != null">customer_id,</if>
+            <if test="startTime != null">start_time,</if>
+            <if test="endTime != null">end_time,</if>
+            <if test="startPlaceId != null">start_place_id,</if>
+            <if test="endPlaceId != null">end_place_id,</if>
+            <if test="cost != null">cost,</if>
+            <if test="mileage != null">mileage,</if>
+            <if test="state != null">state,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderId != null">#{orderId},</if>
+            <if test="carId != null">#{carId},</if>
+            <if test="customerId != null">#{customerId},</if>
+            <if test="startTime != null">#{startTime},</if>
+            <if test="endTime != null">#{endTime},</if>
+            <if test="startPlaceId != null">#{startPlaceId},</if>
+            <if test="endPlaceId != null">#{endPlaceId},</if>
+            <if test="cost != null">#{cost},</if>
+            <if test="mileage != null">#{mileage},</if>
+            <if test="state != null">#{state},</if>
+        </trim>
+    </insert>
+
+    <insert id="insertCarOrder" parameterType="CarOrder">
+        insert into car_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderId != null">order_id,</if>
+            <if test="carId != null">car_id,</if>
+            <if test="customerId != null">customer_id,</if>
+            <if test="startTime != null">start_time,</if>
+            <if test="endTime != null">end_time,</if>
+            <if test="startPlaceId != null">start_place_id,</if>
+            <if test="endPlaceId != null">end_place_id,</if>
+            <if test="cost != null">cost,</if>
+            <if test="mileage != null">mileage,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderId != null">#{orderId},</if>
+            <if test="carId != null">#{carId},</if>
+            <if test="customerId != null">#{customerId},</if>
+            <if test="startTime != null">#{startTime},</if>
+            <if test="endTime != null">#{endTime},</if>
+            <if test="startPlaceId != null">#{startPlaceId},</if>
+            <if test="endPlaceId != null">#{endPlaceId},</if>
+            <if test="cost != null">#{cost},</if>
+            <if test="mileage != null">#{mileage},</if>
+        </trim>
+    </insert>
+
+    <update id="updateCarOrder" parameterType="CarOrder">
+        update car_order
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="carId != null">car_id = #{carId},</if>
+            <if test="customerId != null">customer_id = #{customerId},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="startPlaceId != null">start_place_id = #{startPlaceId},</if>
+            <if test="endPlaceId != null">end_place_id = #{endPlaceId},</if>
+            <if test="cost != null">cost = #{cost},</if>
+            <if test="mileage != null">mileage = #{mileage},</if>
+        </trim>
+        where order_id = #{orderId}
+    </update>
+
+    <delete id="deleteCarOrderById" parameterType="Long">
+        delete
+        from car_order
+        where order_id = #{orderId}
+    </delete>
+
+    <delete id="deleteCarOrderByIds" parameterType="String">
+        delete from car_order where order_id in
+        <foreach item="orderId" collection="array" open="(" separator="," close=")">
+            #{orderId}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -5,7 +5,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,9 +32,6 @@ public class CarBaseInfoController extends BaseController
     @Autowired
     private ICarBaseInfoService carBaseInfoService;
 
-    /**
-     * 查询基本信息列表
-     */
     @PreAuthorize("@ss.hasPermi('car:carBaseInfo:list')")
     @GetMapping("/list")
     public TableDataInfo list(CarBaseInfo carBaseInfo)
@@ -45,9 +41,6 @@ public class CarBaseInfoController extends BaseController
         return getDataTable(list);
     }
 
-    /**
-     * 导出基本信息列表
-     */
     @PreAuthorize("@ss.hasPermi('car:carBaseInfo:export')")
     @Log(title = "基本信息", businessType = BusinessType.EXPORT)
     @GetMapping("/export")
@@ -58,9 +51,6 @@ public class CarBaseInfoController extends BaseController
         return util.exportExcel(list, "carBaseInfo");
     }
 
-    /**
-     * 获取基本信息详细信息
-     */
     @PreAuthorize("@ss.hasPermi('car:carBaseInfo:query')")
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Long id)
@@ -68,31 +58,21 @@ public class CarBaseInfoController extends BaseController
         return AjaxResult.success(carBaseInfoService.selectCarBaseInfoById(id));
     }
 
-    /**
-     * 新增基本信息
-     */
-    @PreAuthorize("@ss.hasPermi('car:carBaseInfo:add')")
-    @Log(title = "基本信息", businessType = BusinessType.INSERT)
+    @PreAuthorize("@ss.hasPermi('car:carBaseInfo:query')")
+    @GetMapping(value = "/getByCarNumber/{carNumber}")
+    public AjaxResult getInfoByCarNumber(@PathVariable("carNumber") String carNumber)
+    {
+        return AjaxResult.success(carBaseInfoService.selectCarBaseInfoByCarNumber(carNumber));
+    }
+
+    @PreAuthorize("@ss.hasPermi('car:carBaseInfo:replace')")
+    @Log(title = "基本信息", businessType = BusinessType.REPLACE)
     @PostMapping
-    public AjaxResult add(@RequestBody CarBaseInfo carBaseInfo)
+    public AjaxResult replace(@RequestBody CarBaseInfo carBaseInfo)
     {
-        return toAjax(carBaseInfoService.insertCarBaseInfo(carBaseInfo));
+        return toAjax(carBaseInfoService.replaceCarBaseInfo(carBaseInfo));
     }
 
-    /**
-     * 修改基本信息
-     */
-    @PreAuthorize("@ss.hasPermi('car:carBaseInfo:edit')")
-    @Log(title = "基本信息", businessType = BusinessType.UPDATE)
-    @PutMapping
-    public AjaxResult edit(@RequestBody CarBaseInfo carBaseInfo)
-    {
-        return toAjax(carBaseInfoService.updateCarBaseInfo(carBaseInfo));
-    }
-
-    /**
-     * 删除基本信息
-     */
     @PreAuthorize("@ss.hasPermi('car:carBaseInfo:remove')")
     @Log(title = "基本信息", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{ids}")

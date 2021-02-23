@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.car.mapper.CarBillingMapper">
+    
+    <resultMap type="com.ruoyi.car.domain.CarBilling" id="CarBillingResult">
+        <result property="modelId"    column="model_id"    />
+        <result property="kmCost"    column="km_cost"    />
+        <result property="minCost"    column="min_cost"    />
+        <result property="dayCost"    column="day_cost"    />
+    </resultMap>
+
+    <sql id="selectCarBillingVo">
+        select model_id, km_cost, min_cost, day_cost from car_billing
+    </sql>
+
+    <select id="selectCarBillingList" parameterType="CarBilling" resultMap="CarBillingResult">
+        <include refid="selectCarBillingVo"/>
+        <where>  
+            <if test="kmCost != null "> and km_cost = #{kmCost}</if>
+            <if test="minCost != null "> and min_cost = #{minCost}</if>
+            <if test="dayCost != null "> and day_cost = #{dayCost}</if>
+        </where>
+    </select>
+    
+    <select id="selectCarBillingById" parameterType="Long" resultMap="CarBillingResult">
+        <include refid="selectCarBillingVo"/>
+        where model_id = #{modelId}
+    </select>
+
+
+    <insert id="replaceCarBilling" parameterType="CarBilling">
+        replace into car_billing
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="modelId != null">model_id,</if>
+            <if test="kmCost != null">km_cost,</if>
+            <if test="minCost != null">min_cost,</if>
+            <if test="dayCost != null">day_cost,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="modelId != null">#{modelId},</if>
+            <if test="kmCost != null">#{kmCost},</if>
+            <if test="minCost != null">#{minCost},</if>
+            <if test="dayCost != null">#{dayCost},</if>
+        </trim>
+    </insert>
+
+    <delete id="deleteCarBillingById" parameterType="Long">
+        delete from car_billing where model_id = #{modelId}
+    </delete>
+
+    <delete id="deleteCarBillingByIds" parameterType="String">
+        delete from car_billing where model_id in 
+        <foreach item="modelId" collection="array" open="(" separator="," close=")">
+            #{modelId}
+        </foreach>
+    </delete>
+    
+</mapper>

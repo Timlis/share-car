@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.car.mapper.CarCustomerMapper">
-    
-    <resultMap type="CarCustomer" id="CarCustomerResult">
-        <result property="id"    column="id"    />
-        <result property="name"    column="name"    />
-        <result property="idCard"    column="id_card"    />
-        <result property="phone"    column="phone"    />
-        <result property="sex"    column="sex"    />
-        <result property="age"    column="age"    />
-        <result property="driverDate"    column="driver_date"    />
+
+    <resultMap type="com.ruoyi.car.domain.CarCustomer" id="CarCustomerResult">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="idCard" column="id_card"/>
+        <result property="phone" column="phone"/>
+        <result property="sex" column="sex"/>
+        <result property="age" column="age"/>
+        <result property="driverDate" column="driver_date"/>
     </resultMap>
 
     <resultMap id="CarCustomerAllResult" type="com.ruoyi.car.domain.CarCustomerExpand">
@@ -32,17 +32,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 
     <sql id="selectCarCustomerVo">
-        select id, name, id_card, phone, sex, age, driver_date from car_customer
+        select id, name, id_card, phone, sex, age, driver_date
+        from car_customer
     </sql>
 
     <select id="selectCarCustomerList" parameterType="CarCustomer" resultMap="CarCustomerResult">
         <include refid="selectCarCustomerVo"/>
-        <where>  
-            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
-            <if test="idCard != null  and idCard != ''"> and id_card like concat('%', #{idCard}, '%')</if>
-            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
-            <if test="sex != null "> and sex = #{sex}</if>
-            <if test="beginValue != null and beginValue != '' and endValue != null and endValue != ''"> and age between #{beginValue} and #{endValue}</if>
+        <where>
+            <if test="name != null  and name != ''">and name like concat('%', #{name}, '%')</if>
+            <if test="idCard != null  and idCard != ''">and id_card like concat('%', #{idCard}, '%')</if>
+            <if test="phone != null  and phone != ''">and phone = #{phone}</if>
+            <if test="sex != null ">and sex = #{sex}</if>
+            <if test="beginValue != null and beginValue != '' and endValue != null and endValue != ''">and age between
+                #{beginValue} and #{endValue}
+            </if>
             <if test="beginTime != null and beginTime != ''"><!-- 开始时间检索 -->
                 AND date_format(driver_date,'%y%m%d') &gt;= date_format(#{beginTime},'%y%m%d')
             </if>
@@ -51,32 +54,32 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             </if>
         </where>
     </select>
-    
+
     <select id="selectCarCustomerById" parameterType="Long" resultMap="CarCustomerResult">
         <include refid="selectCarCustomerVo"/>
         where id = #{id}
     </select>
 
     <select id="selectCarCustomerAllById" parameterType="Long" resultMap="CarCustomerAllResult">
-        SELECT
-            cc.id as id,
-            cc.`name` as customerName,
-            cc.phone as phone,
-            cc.sex as sex,
-            cc.id_card as id_card,
-            cc.driver_date as driver_date,
-            cc.age as age,
-            cce.is_pay as is_pay,
-            cce.now_balance as now_balance,
-            cce.use_times as use_times,
-            cce.violations_num as violations_num,
-            cce.car_score as car_score,
-            cce.credit_score as credit_score
-        FROM car_customer cc INNER JOIN car_customer_expand cce
-        ON cce.customer_id = cc.id
-        AND cc.id = #{id}
+        SELECT cc.id              as id,
+               cc.`name`          as customerName,
+               cc.phone           as phone,
+               cc.sex             as sex,
+               cc.id_card         as id_card,
+               cc.driver_date     as driver_date,
+               cc.age             as age,
+               cce.is_pay         as is_pay,
+               cce.now_balance    as now_balance,
+               cce.use_times      as use_times,
+               cce.violations_num as violations_num,
+               cce.car_score      as car_score,
+               cce.credit_score   as credit_score
+        FROM car_customer cc
+                 INNER JOIN car_customer_expand cce
+                            ON cce.customer_id = cc.id
+                                AND cc.id = #{id}
     </select>
-        
+
     <insert id="insertCarCustomer" parameterType="CarCustomer" useGeneratedKeys="true" keyProperty="id">
         insert into car_customer
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -86,7 +89,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="sex != null">sex,</if>
             <if test="age != null">age,</if>
             <if test="driverDate != null">driver_date,</if>
-         </trim>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="name != null and name != ''">#{name},</if>
             <if test="idCard != null and idCard != ''">#{idCard},</if>
@@ -94,7 +97,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="sex != null">#{sex},</if>
             <if test="age != null">#{age},</if>
             <if test="driverDate != null">#{driverDate},</if>
-         </trim>
+        </trim>
     </insert>
 
     <update id="updateCarCustomer" parameterType="CarCustomer">
@@ -111,14 +114,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
     <delete id="deleteCarCustomerById" parameterType="Long">
-        delete from car_customer where id = #{id}
+        delete
+        from car_customer
+        where id = #{id}
     </delete>
 
     <delete id="deleteCarCustomerByIds" parameterType="String">
-        delete from car_customer where id in 
+        delete from car_customer where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
     </delete>
-    
+
 </mapper>

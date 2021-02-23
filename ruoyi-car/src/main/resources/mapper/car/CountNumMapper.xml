@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.car.mapper.CountNumMapper">
+    <resultMap id="CountNumResult" type="com.ruoyi.car.domain.CountNums">
+        <result property="countCustomer" column="countCustomer"/>
+        <result property="countCar" column="countCar"/>
+        <result property="countMoney" column="countMoney"/>
+        <result property="countOrder" column="countOrder"/>
+    </resultMap>
+
+    <resultMap id="PieValueResult" type="com.ruoyi.car.domain.PieValue">
+        <result property="name" column="modelName"/>
+        <result property="value" column="number"/>
+    </resultMap>
+
+    <resultMap id="BarValueResult" type="com.ruoyi.car.domain.BarValueSql">
+        <result property="num" column="num"/>
+        <result property="cost" column="cost"/>
+    </resultMap>
+
+    <select id="countFirstPageNum" resultMap="CountNumResult">
+        SELECT (SELECT COUNT(1) FROM car_customer)  AS countCustomer,
+               (SELECT COUNT(1) FROM car_base_info) AS countCar,
+               (SELECT SUM(cost) FROM car_order)    AS countMoney,
+               (SELECT COUNT(1) FROM car_order)     AS countOrder
+    </select>
+
+    <select id="countPieNums" resultMap="PieValueResult">
+        SELECT car_model.model as modelName, count(*) as number
+        FROM car_base_info,
+             car_order,
+             car_model
+        WHERE car_base_info.id = car_order.car_id
+          AND car_model.id = car_base_info.model_id
+        GROUP BY car_base_info.model_id
+        HAVING count(*) >= 1
+        ORDER BY number desc
+        LIMIT 0,5
+    </select>
+
+    <select id="countBarNums" resultMap="BarValueResult">
+        SELECT count(*) as num, SUM(cost) as cost
+        FROM car_order
+        GROUP BY WEEKDAY(end_time)
+    </select>
+
+</mapper>

@@ -1,58 +1,88 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.car.mapper.CarBaseInfoMapper">
-    
-    <resultMap type="CarBaseInfo" id="CarBaseInfoResult">
-        <result property="id"    column="id"    />
-        <result property="carNumber"    column="car_number"    />
-        <result property="brandId"    column="brand_id"    />
-        <result property="modelId"    column="model_id"    />
-        <result property="buyTime"    column="buy_time"    />
-        <result property="curBattery"    column="cur_battery"    />
-        <result property="buyPrice"    column="buy_price"    />
-        <result property="useState"    column="use_state"    />
-        <result property="pic"    column="pic"    />
-        <result property="state"    column="state"    />
-        <result property="totalMileage"    column="total_mileage"    />
-        <result property="totalTime"    column="total_time"    />
+
+    <resultMap type="com.ruoyi.car.domain.CarBaseInfo" id="CarBaseInfoResult">
+        <result property="id" column="id"/>
+        <result property="carNumber" column="car_number"/>
+        <result property="brandId" column="brand_id"/>
+        <result property="modelId" column="model_id"/>
+        <result property="buyTime" column="buy_time"/>
+        <result property="curBattery" column="cur_battery"/>
+        <result property="buyPrice" column="buy_price"/>
+        <result property="useState" column="use_state"/>
+        <result property="pic" column="pic"/>
+        <result property="state" column="state"/>
+        <result property="totalMileage" column="total_mileage"/>
+        <result property="totalTime" column="total_time"/>
+        <result property="partId" column="partId"/>
+        <result property="spaceId" column="spaceId"/>
     </resultMap>
 
     <sql id="selectCarBaseInfoVo">
-        select id, car_number, brand_id, model_id, buy_time, cur_battery, buy_price, use_state, pic, state, total_mileage, total_time from car_base_info
+        select id,
+               car_number,
+               brand_id,
+               model_id,
+               buy_time,
+               cur_battery,
+               buy_price,
+               use_state,
+               pic,
+               state,
+               total_mileage,
+               total_time,
+               partId,
+               spaceId
+        from car_base_info
     </sql>
 
 
     <select id="selectCarBaseInfoList" parameterType="CarBaseInfo" resultMap="CarBaseInfoResult">
         <include refid="selectCarBaseInfoVo"/>
-        <where>  
-            <if test="carNumber != null  and carNumber != ''"> and car_number like concat('%', #{carNumber}, '%')</if>
-            <if test="brandId != null "> and brand_id = #{brandId}</if>
-            <if test="modelId != null "> and model_id = #{modelId}</if>
-            <if test="buyTime != null "> and buy_time = #{buyTime}</if>
-            <if test="curBattery != null "> and cur_battery = #{curBattery}</if>
-            <if test="buyPrice != null "> and buy_price = #{buyPrice}</if>
-            <if test="useState != null "> and use_state = #{useState}</if>
-            <if test="pic != null  and pic != ''"> and pic = #{pic}</if>
-            <if test="state != null "> and state = #{state}</if>
-            <if test="params.beginTotalMileage != null and params.beginTotalMileage != '' and params.endTotalMileage != null and params.endTotalMileage != ''"> and total_mileage between #{params.beginTotalMileage} and #{params.endTotalMileage}</if>
-            <if test="params.beginTotalTime != null and params.beginTotalTime != '' and params.endTotalTime != null and params.endTotalTime != ''"> and total_time between #{params.beginTotalTime} and #{params.endTotalTime}</if>
+        <where>
+            <if test="carNumber != null  and carNumber != ''">and car_number like concat('%', #{carNumber}, '%')</if>
+            <if test="brandId != null ">and brand_id = #{brandId}</if>
+            <if test="modelId != null ">and model_id = #{modelId}</if>
+            <if test="buyTime != null ">and buy_time = #{buyTime}</if>
+            <if test="curBattery != null ">and cur_battery = #{curBattery}</if>
+            <if test="buyPrice != null ">and buy_price = #{buyPrice}</if>
+            <if test="useState != null ">and use_state = #{useState}</if>
+            <if test="pic != null  and pic != ''">and pic = #{pic}</if>
+            <if test="state != null ">and state = #{state}</if>
+            <if test="params.beginTotalMileage != null and params.beginTotalMileage != '' and params.endTotalMileage != null and params.endTotalMileage != ''">
+                and total_mileage between #{params.beginTotalMileage} and #{params.endTotalMileage}
+            </if>
+            <if test="params.beginTotalTime != null and params.beginTotalTime != '' and params.endTotalTime != null and params.endTotalTime != ''">
+                and total_time between #{params.beginTotalTime} and #{params.endTotalTime}
+            </if>
+            <if test="partId != null">and partId = #{partId}</if>
+            <if test="spaceId != null">and spaceId = #{spaceId}</if>
         </where>
     </select>
-    
+
     <select id="selectCarBaseInfoById" parameterType="Long" resultMap="CarBaseInfoResult">
         <include refid="selectCarBaseInfoVo"/>
         where id = #{id}
     </select>
 
-    <select id="CountCarByModelId" parameterType="Long" resultType="long">
-        SELECT COUNT(1) FROM car_base_info WHERE model_id = #{model_id};
+    <select id="selectCarBaseInfoByCarNumber" parameterType="string" resultMap="CarBaseInfoResult">
+        <include refid="selectCarBaseInfoVo"/>
+        where car_number = #{carNumber}
     </select>
-        
-    <insert id="insertCarBaseInfo" parameterType="CarBaseInfo" useGeneratedKeys="true" keyProperty="id">
-        insert into car_base_info
+
+    <select id="CountCarByModelId" parameterType="Long" resultType="long">
+        SELECT COUNT(1)
+        FROM car_base_info
+        WHERE model_id = #{model_id};
+    </select>
+
+    <insert id="replaceCarBaseInfo" parameterType="CarBaseInfo">
+        replace into car_base_info
         <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
             <if test="carNumber != null and carNumber != ''">car_number,</if>
             <if test="brandId != null">brand_id,</if>
             <if test="modelId != null">model_id,</if>
@@ -64,8 +94,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="state != null">state,</if>
             <if test="totalMileage != null">total_mileage,</if>
             <if test="totalTime != null">total_time,</if>
-         </trim>
+            <if test="partId != null">partId,</if>
+            <if test="spaceId != null">spaceId,</if>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
             <if test="carNumber != null and carNumber != ''">#{carNumber},</if>
             <if test="brandId != null">#{brandId},</if>
             <if test="modelId != null">#{modelId},</if>
@@ -77,36 +110,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="state != null">#{state},</if>
             <if test="totalMileage != null">#{totalMileage},</if>
             <if test="totalTime != null">#{totalTime},</if>
-         </trim>
+            <if test="partId != null">#{partId},</if>
+            <if test="spaceId != null">#{spaceId},</if>
+        </trim>
     </insert>
 
-    <update id="updateCarBaseInfo" parameterType="CarBaseInfo">
-        update car_base_info
-        <trim prefix="SET" suffixOverrides=",">
-            <if test="carNumber != null and carNumber != ''">car_number = #{carNumber},</if>
-            <if test="brandId != null">brand_id = #{brandId},</if>
-            <if test="modelId != null">model_id = #{modelId},</if>
-            <if test="buyTime != null">buy_time = #{buyTime},</if>
-            <if test="curBattery != null">cur_battery = #{curBattery},</if>
-            <if test="buyPrice != null">buy_price = #{buyPrice},</if>
-            <if test="useState != null">use_state = #{useState},</if>
-            <if test="pic != null and pic != ''">pic = #{pic},</if>
-            <if test="state != null">state = #{state},</if>
-            <if test="totalMileage != null">total_mileage = #{totalMileage},</if>
-            <if test="totalTime != null">total_time = #{totalTime},</if>
-        </trim>
-        where id = #{id}
-    </update>
-
     <delete id="deleteCarBaseInfoById" parameterType="Long">
-        delete from car_base_info where id = #{id}
+        delete
+        from car_base_info
+        where id = #{id}
     </delete>
 
     <delete id="deleteCarBaseInfoByIds" parameterType="String">
-        delete from car_base_info where id in 
+        delete from car_base_info where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
     </delete>
-    
+
 </mapper>

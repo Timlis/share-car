@@ -1,42 +1,43 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.car.mapper.CarBrandMapper">
-    
-    <resultMap type="CarBrand" id="CarBrandResult">
-        <result property="id"    column="id"    />
-        <result property="brand"    column="brand"    />
-        <result property="brandPic"    column="brand_pic"    />
+
+    <resultMap type="com.ruoyi.car.domain.CarBrand" id="CarBrandResult">
+        <result property="id" column="id"/>
+        <result property="brand" column="brand"/>
+        <result property="brandPic" column="brand_pic"/>
     </resultMap>
 
     <sql id="selectCarBrandVo">
-        select id, brand, brand_pic from car_brand
+        select id, brand, brand_pic
+        from car_brand
     </sql>
 
     <select id="selectCarBrandList" parameterType="CarBrand" resultMap="CarBrandResult">
         <include refid="selectCarBrandVo"/>
-        <where>  
-            <if test="brand != null  and brand != ''"> and brand = #{brand}</if>
-            <if test="brandPic != null  and brandPic != ''"> and brand_pic = #{brandPic}</if>
+        <where>
+            <if test="brand != null  and brand != ''">and brand = #{brand}</if>
+            <if test="brandPic != null  and brandPic != ''">and brand_pic = #{brandPic}</if>
         </where>
     </select>
-    
+
     <select id="selectCarBrandById" parameterType="Long" resultMap="CarBrandResult">
         <include refid="selectCarBrandVo"/>
         where id = #{id}
     </select>
-        
+
     <insert id="insertCarBrand" parameterType="CarBrand" useGeneratedKeys="true" keyProperty="id">
         insert into car_brand
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="brand != null">brand,</if>
             <if test="brandPic != null">brand_pic,</if>
-         </trim>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="brand != null">#{brand},</if>
             <if test="brandPic != null">#{brandPic},</if>
-         </trim>
+        </trim>
     </insert>
 
     <update id="updateCarBrand" parameterType="CarBrand">
@@ -49,14 +50,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
     <delete id="deleteCarBrandById" parameterType="Long">
-        delete from car_brand where id = #{id}
+        delete
+        from car_brand
+        where id = #{id}
     </delete>
 
     <delete id="deleteCarBrandByIds" parameterType="String">
-        delete from car_brand where id in 
+        delete from car_brand where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
     </delete>
-    
+
 </mapper>

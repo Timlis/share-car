@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.car.mapper.CarPartSpaceMapper">
+
+    <resultMap type="com.ruoyi.car.domain.CarPartSpace" id="CarPartSpaceResult">
+        <result property="partId" column="part_id"/>
+        <result property="spaceId" column="space_id"/>
+        <result property="carId" column="car_id"/>
+        <result property="state" column="state"/>
+        <result property="startTime" column="start_time"/>
+    </resultMap>
+
+    <sql id="selectCarPartSpaceVo">
+        select part_id, space_id, car_id, state, start_time
+        from car_part_space
+    </sql>
+
+    <select id="selectCarPartSpaceList" parameterType="CarPartSpace" resultMap="CarPartSpaceResult">
+        <include refid="selectCarPartSpaceVo"/>
+        <where>
+            <if test="partId != null ">and part_id = #{partId}</if>
+            <if test="spaceId != null">and space_id = #{spaceId}</if>
+            <if test="carId != null">and car_id = #{carId}</if>
+            <if test="state != null ">and state = #{state}</if>
+            <if test="startTime != null">and start_time = #{startTime}</if>
+        </where>
+    </select>
+
+    <select id="selectCarPartSpaceById" parameterType="Long" resultMap="CarPartSpaceResult">
+        <include refid="selectCarPartSpaceVo"/>
+        where part_id = #{param1} and space_id = #{param2}
+    </select>
+
+    <select id="getFreeSpaceCount" parameterType="Long" resultType="int">
+        select count(*) from car_part_space where part_id = #{partId} and state = 0;
+    </select>
+
+    <select id="selectCarIdsByPartId" parameterType="Long" resultType="long">
+        select car_id from car_part_space where part_id = #{partId} and state = 1;
+    </select>
+
+    <insert id="replaceCarPartSpace" parameterType="CarPartSpace">
+        replace into car_part_space
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="partId != null">part_id,</if>
+            <if test="spaceId != null">space_id,</if>
+            <if test="carId != null">car_id,</if>
+            <if test="state != null">state,</if>
+            <if test="startTime != null">start_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="partId != null">#{partId},</if>
+            <if test="spaceId != null">#{spaceId},</if>
+            <if test="carId != null">#{carId},</if>
+            <if test="state != null">#{state},</if>
+            <if test="startTime != null">#{startTime},</if>
+        </trim>
+    </insert>
+
+</mapper>

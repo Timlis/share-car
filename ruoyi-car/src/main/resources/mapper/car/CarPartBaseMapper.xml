@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.car.mapper.CarPartBaseMapper">
+
+    <resultMap type="com.ruoyi.car.domain.CarPartBase" id="CarPartBaseResult">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="longitude" column="longitude"/>
+        <result property="latitude" column="latitude"/>
+        <result property="totalNums" column="total_nums"/>
+    </resultMap>
+
+    <sql id="selectCarPartBaseVo">
+        select id, name, longitude, latitude, total_nums
+        from car_part_base
+    </sql>
+
+    <select id="selectCarPartBaseList" parameterType="CarPartBase" resultMap="CarPartBaseResult">
+        <include refid="selectCarPartBaseVo"/>
+        <where>
+            <if test="name != null and name != ''">and name like concat('%', #{name}, '%')</if>
+            <if test="longitude != null  and longitude != ''">and longitude = #{longitude}</if>
+            <if test="latitude != null  and latitude != ''">and latitude = #{latitude}</if>
+            <if test="totalNums != null ">and total_nums = #{totalNums}</if>
+        </where>
+    </select>
+
+    <select id="selectCarPartBaseById" parameterType="Integer" resultMap="CarPartBaseResult">
+        <include refid="selectCarPartBaseVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="replaceCarPartBase" parameterType="CarPartBase" useGeneratedKeys="true" keyProperty="id">
+        replace into car_part_base
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">name,</if>
+            <if test="longitude != null and longitude != ''">longitude,</if>
+            <if test="latitude != null and latitude != ''">latitude,</if>
+            <if test="totalNums != null">total_nums,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="longitude != null and longitude != ''">#{longitude},</if>
+            <if test="latitude != null and latitude != ''">#{latitude},</if>
+            <if test="totalNums != null">#{totalNums},</if>
+        </trim>
+    </insert>
+
+    <delete id="deleteCarPartBaseById" parameterType="Integer">
+        delete
+        from car_part_base
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteCarPartBaseByIds" parameterType="String">
+        delete from car_part_base where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

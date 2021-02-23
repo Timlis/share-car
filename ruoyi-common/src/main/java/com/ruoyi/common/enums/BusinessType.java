@@ -23,6 +23,11 @@ public enum BusinessType
     UPDATE,
 
     /**
+     * 新增或修改
+     */
+    REPLACE,
+
+    /**
      * 删除
      */
     DELETE,

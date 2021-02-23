@@ -33,9 +33,6 @@ public class CarCustomerExpandController extends BaseController
     @Autowired
     private ICarCustomerExpandService carCustomerExpandService;
 
-    /**
-     * 查询用户扩展信息列表
-     */
     @PreAuthorize("@ss.hasPermi('car:customerExpand:list')")
     @GetMapping("/list")
     public TableDataInfo list(CarCustomerExpand carCustomerExpand)
@@ -45,9 +42,6 @@ public class CarCustomerExpandController extends BaseController
         return getDataTable(list);
     }
 
-    /**
-     * 导出用户扩展信息列表
-     */
     @PreAuthorize("@ss.hasPermi('car:customerExpand:export')")
     @Log(title = "用户扩展信息", businessType = BusinessType.EXPORT)
     @GetMapping("/export")
@@ -58,9 +52,6 @@ public class CarCustomerExpandController extends BaseController
         return util.exportExcel(list, "customerExpand");
     }
 
-    /**
-     * 获取用户扩展信息详细信息
-     */
     @PreAuthorize("@ss.hasPermi('car:customerExpand:query')")
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Long id)
@@ -68,31 +59,14 @@ public class CarCustomerExpandController extends BaseController
         return AjaxResult.success(carCustomerExpandService.selectCarCustomerExpandById(id));
     }
 
-    /**
-     * 新增用户扩展信息
-     */
-    @PreAuthorize("@ss.hasPermi('car:customerExpand:add')")
-    @Log(title = "用户扩展信息", businessType = BusinessType.INSERT)
+    @PreAuthorize("@ss.hasPermi('car:customerExpand:replace')")
+    @Log(title = "用户扩展信息", businessType = BusinessType.REPLACE)
     @PostMapping
     public AjaxResult add(@RequestBody CarCustomerExpand carCustomerExpand)
     {
-        return toAjax(carCustomerExpandService.insertCarCustomerExpand(carCustomerExpand));
+        return toAjax(carCustomerExpandService.replaceCarCustomerExpand(carCustomerExpand));
     }
 
-    /**
-     * 修改用户扩展信息
-     */
-    @PreAuthorize("@ss.hasPermi('car:customerExpand:edit')")
-    @Log(title = "用户扩展信息", businessType = BusinessType.UPDATE)
-    @PutMapping
-    public AjaxResult edit(@RequestBody CarCustomerExpand carCustomerExpand)
-    {
-        return toAjax(carCustomerExpandService.updateCarCustomerExpand(carCustomerExpand));
-    }
-
-    /**
-     * 删除用户扩展信息
-     */
     @PreAuthorize("@ss.hasPermi('car:customerExpand:remove')")
     @Log(title = "用户扩展信息", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{ids}")

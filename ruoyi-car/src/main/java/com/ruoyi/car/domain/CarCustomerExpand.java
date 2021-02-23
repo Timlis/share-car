@@ -1,9 +1,10 @@
 package com.ruoyi.car.domain;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+
 import com.ruoyi.common.annotation.Excel;
-import com.ruoyi.common.core.domain.BaseEntity;
+
+
+import java.math.BigDecimal;
 
 /**
  * 用户扩展信息对象 car_customer_expand
@@ -15,8 +16,6 @@ public class CarCustomerExpand extends CarCustomer
 {
     private static final long serialVersionUID = 1L;
 
-    /** id */
-    private Long id;
 
     /** 用户id */
     @Excel(name = "用户id")
@@ -44,12 +43,23 @@ public class CarCustomerExpand extends CarCustomer
 
     /** 当前余额 */
     @Excel(name = "当前余额")
-    private Long nowBalance;
+    private BigDecimal nowBalance;
 
     /** 信用积分 */
     @Excel(name = "信用积分")
     private Long creditScore;
 
+    //用户总里程
+    @Excel(name = "总里程")
+    private Long totalMileage;
+
+    public Long getTotalMileage() {
+        return totalMileage;
+    }
+
+    public void setTotalMileage(Long totalMileage) {
+        this.totalMileage = totalMileage;
+    }
 
     public String getCustomerName() {
         return customerName;
@@ -59,15 +69,6 @@ public class CarCustomerExpand extends CarCustomer
         this.customerName = customerName;
     }
 
-    public void setId(Long id)
-    {
-        this.id = id;
-    }
-
-    public Long getId() 
-    {
-        return id;
-    }
     public void setCustomerId(Long customerId) 
     {
         this.customerId = customerId;
@@ -113,12 +114,12 @@ public class CarCustomerExpand extends CarCustomer
     {
         return violationsNum;
     }
-    public void setNowBalance(Long nowBalance) 
+    public void setNowBalance(BigDecimal nowBalance)
     {
         this.nowBalance = nowBalance;
     }
 
-    public Long getNowBalance() 
+    public BigDecimal getNowBalance()
     {
         return nowBalance;
     }
@@ -142,17 +143,22 @@ public class CarCustomerExpand extends CarCustomer
                 carCustomer.getDriverDate());
     }
 
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("customerId", getCustomerId())
-            .append("isPay", getIsPay())
-            .append("carScore", getCarScore())
-            .append("useTimes", getUseTimes())
-            .append("violationsNum", getViolationsNum())
-            .append("nowBalance", getNowBalance())
-            .append("creditScore", getCreditScore())
-            .toString();
+
+    public void updateTotalMileage(Long mileage){
+        setTotalMileage(getTotalMileage() + mileage);
     }
+
+    public void updateUseTimes(Long times){
+        setUseTimes(getUseTimes() + times);
+    }
+
+    public void updateNowBalance(BigDecimal balance){
+        setNowBalance(getNowBalance().subtract(balance));
+    }
+
+    public void updateCreditScore(Long creditScore){
+
+        setCreditScore(getCreditScore() + creditScore);
+    }
+
 }

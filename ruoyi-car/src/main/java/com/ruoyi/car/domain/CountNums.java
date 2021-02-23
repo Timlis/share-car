@@ -3,7 +3,7 @@ package com.ruoyi.car.domain;
 public class CountNums {
     private Integer countCustomer;
     private Integer countCar;
-    private Integer countMoney;
+    private Float countMoney;
     private Integer countOrder;
 
     public Integer getCountCustomer() {
@@ -22,11 +22,11 @@ public class CountNums {
         this.countCar = countCar;
     }
 
-    public Integer getCountMoney() {
+    public Float getCountMoney() {
         return countMoney;
     }
 
-    public void setCountMoney(Integer countMoney) {
+    public void setCountMoney(Float countMoney) {
         this.countMoney = countMoney;
     }
 
@@ -41,7 +41,7 @@ public class CountNums {
     public CountNums() {
     }
 
-    public CountNums(Integer countCustomer, Integer countCar, Integer countMoney, Integer countOrder) {
+    public CountNums(Integer countCustomer, Integer countCar, Float countMoney, Integer countOrder) {
         this.countCustomer = countCustomer;
         this.countCar = countCar;
         this.countMoney = countMoney;
